@@ -27,8 +27,9 @@ jobs:
         run: winget-intune generate-index -o ./index.json
       
       - name: 📤 Commit and push changes
+        shell: pwsh
         run: |
-          if(git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
+          if (git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
             # uncommitted changes
             git config --local user.email "1292510+svrooij@users.noreply.github.com"
             git config --local user.name "GitHub Action on behalf of svrooij"
