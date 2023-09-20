@@ -1,0 +1,30 @@
+name: Refresh the index
+
+on:
+  workflow_dispatch:
+
+jobs:
+  refresh-index:
+    name: 📃 Refresh the index
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+    steps:
+      - name: 👨‍💻 Check-out code
+        uses: actions/checkout@v3
+
+      - name: 👨‍🔧 Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      
+      - name: 📦 Install winget-intune
+        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 0.5.6-alpha0005
+
+      - name: 📃 Refresh the index
+        run: winget-intune generate-index -o ./index.json
+
+
+  
