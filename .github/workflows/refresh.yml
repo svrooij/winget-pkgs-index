@@ -8,12 +8,12 @@ jobs:
     name: 📃 Refresh the index
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      issues: read
-      checks: write
+      contents: write
     steps:
       - name: 👨‍💻 Check-out code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: 👨‍🔧 Setup .NET Core SDK
         uses: actions/setup-dotnet@v3
@@ -25,6 +25,16 @@ jobs:
 
       - name: 📃 Refresh the index
         run: winget-intune generate-index -o ./index.json
-
-
-  
+      
+      - name: 📤 Commit and push changes
+        run: |
+          if(git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
+            # uncommitted changes
+            git config --local user.email "1292510+svrooij@users.noreply.github.com"
+            git config --local user.name "GitHub Action on behalf of svrooij"
+            git add index.json
+            git commit -m "🔄 Refresh index"
+            git push
+          } else {
+            echo "❌ No changes to commit"
+          }
