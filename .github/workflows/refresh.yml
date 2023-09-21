@@ -25,18 +25,23 @@ jobs:
       - name: 📦 Install winget-intune
         run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 0.5.6-alpha0005
 
-      - name: 📃 Refresh the index
+      - name: 📃 Regenerate index
         run: winget-intune generate-index -o ./index.json
       
-      - name: 📤 Commit and push changes
+      - name: 📤 Commit and push changes, if any
         shell: pwsh
         run: |
           if (git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
+            echo "✅ Changes to commit"
+            echo "📃 Updating CSV file"
+            Get-Content -Path "index.json" | ConvertFrom-Json | Export-Csv -Path "index.csv"
+            git diff --output=changes.txt index.csv
+            [System.Environment]::SetEnvironmentVariable("GITHUB_STEP_SUMMARY", "## Found several changes in index`r`n`r`n" +'```Shell' + "`r`n$(Get-Content -Path changes.txt)`r`n"+ '```')
             # uncommitted changes
             git config --local user.email "1292510+svrooij@users.noreply.github.com"
             git config --local user.name "GitHub Action on behalf of svrooij"
-            git add index.json
-            git commit -m "🔄 Refresh index"
+            git add index.json index.csv
+            git commit -m "Refreshed index 🤖"
             git push
           } else {
             echo "❌ No changes to commit"
