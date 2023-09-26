@@ -23,7 +23,7 @@ jobs:
           dotnet-version: 7.x
       
       - name: 📦 Install winget-intune
-        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 0.5.6-alpha0005
+        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 0.6.0-alpha0009
 
       - name: 📃 Regenerate index
         run: winget-intune generate-index -o ./index.json
