@@ -20,13 +20,13 @@ jobs:
       - name: 👨‍🔧 Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 7.x
+          dotnet-version: 8.x
       
-      - name: 📦 Install winget-intune
-        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 0.6.0-alpha0009
+      - name: 📦 Install wintuner cli
+        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 1.0.6
 
       - name: 📃 Regenerate index
-        run: winget-intune generate-index -o ./index.json
+        run: wintuner generate-index --output-folder ./ --csvv2 true --json true --update-github
       
       - name: 📤 Commit and push changes, if any
         shell: pwsh
@@ -34,13 +34,13 @@ jobs:
           if (git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
             echo "✅ Changes to commit"
             echo "📃 Updating CSV file"
-            Get-Content -Path "index.json" | ConvertFrom-Json | Export-Csv -Path "index.csv"
-            git diff --output=changes.txt index.csv
-            [System.Environment]::SetEnvironmentVariable("GITHUB_STEP_SUMMARY", "## Found several changes in index`r`n`r`n" +'```Shell' + "`r`n$(Get-Content -Path changes.txt)`r`n"+ '```')
+            # Get-Content -Path "index.json" | ConvertFrom-Json | Export-Csv -Path "index.csv"
+            # git diff --output=changes.txt index.csv
+            # [System.Environment]::SetEnvironmentVariable("GITHUB_STEP_SUMMARY", "## Found several changes in index`r`n`r`n" +'```Shell' + "`r`n$(Get-Content -Path changes.txt)`r`n"+ '```')
             # uncommitted changes
             git config --local user.email "1292510+svrooij@users.noreply.github.com"
             git config --local user.name "GitHub Action on behalf of svrooij"
-            git add index.json index.csv
+            git add index.json index.csv index.v2.json index.v2.csv
             git commit -m "Refreshed index 🤖"
             git push
           } else {
