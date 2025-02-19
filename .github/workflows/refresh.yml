@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 */6 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/refresh.yml'
+
 
 jobs:
   refresh-index:
@@ -26,7 +32,7 @@ jobs:
         run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 1.0.6
 
       - name: 📃 Regenerate index
-        run: wintuner generate-index --output-folder ./ --csvv2 true --json true --update-github
+        run: wintuner generate-index --output-folder ./ --csvv2 --csv --json --update-github
       
       - name: 📤 Commit and push changes, if any
         shell: pwsh
