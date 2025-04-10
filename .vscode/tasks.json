@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "dotnet: build",
+			"command": "dotnet build ${workspaceFolder}/src/WingetIndexGenerator/WingetIndexGenerator.csproj",
+			"group": {
+					"kind": "build",
+					"isDefault": true
+			},
+			"problemMatcher": "$msCompile"
+		}
+	]
+}
