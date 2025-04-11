@@ -25,10 +25,14 @@ public partial class Package
 
     public Byte[]? Hash { get; set; }
 
+    public override string ToString()
+    {
+        return $"{Id} [{LatestVersion}]";
+    }
 }
 
 public partial class Package
 {
-    public virtual ICollection<Tag> Tags { get; set; }
+    public virtual ICollection<Tag>? Tags { get; set; }
 }
 
