@@ -36,7 +36,7 @@ internal sealed class GenerateCommand : Command
         AddOption(_outputFolder);
         AddOption(_urlOption);
         AddOption(_keepDatabase);
-        this.SetHandler((context) => 
+        this.SetHandler((context) =>
         {
             var outputFolder = context.ParseResult.GetValueForOption(_outputFolder)!;
             if (!Path.IsPathFullyQualified(outputFolder))
@@ -53,7 +53,8 @@ internal sealed class GenerateCommand : Command
         });
     }
 
-    private static async Task<int> commandHandler(Uri uri, string outputFolder, bool removeDatabase, InvocationContext context) {
+    private static async Task<int> commandHandler(Uri uri, string outputFolder, bool removeDatabase, InvocationContext context)
+    {
         var cancellationToken = context.GetCancellationToken();
 
         // Download the source and extract the .db file to a temporary location
@@ -70,7 +71,7 @@ internal sealed class GenerateCommand : Command
             var packages = await db.Packages
                 .Include(p => p.Tags)
                 .ToListAsync(cancellationToken);
-            
+
             if (packages == null || packages.Count == 0)
             {
                 Console.WriteLine("No packages found in the database.");
@@ -91,11 +92,14 @@ internal sealed class GenerateCommand : Command
             // Write the packages to the csv files
             Console.WriteLine($"Writing {packages.Count} packages to csv files in {outputFolder}");
             await WriteCsvFilesAsync(packageV2List, outputFolder, cancellationToken);
-            
-            try {
+
+            try
+            {
                 // Write a summary to the GITHUB_STEP_SUMMARY file if it exists and is set.
                 await WriteGithubSummaryAsync(packageV2List, timestamp, cancellationToken);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error writing to GITHUB_STEP_SUMMARY: {ex.Message}");
             }
 
@@ -106,7 +110,9 @@ internal sealed class GenerateCommand : Command
             {
                 // Clean up the temporary file after use
                 File.Delete(databaseFilePath);
-            } else {
+            }
+            else
+            {
                 // If not deleting, just inform the user
                 Console.WriteLine($"Temporary database file not deleted: {databaseFilePath}");
             }
@@ -124,7 +130,8 @@ internal sealed class GenerateCommand : Command
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="HttpRequestException"></exception>
     /// <exception cref="IOException"></exception>
-    internal static async Task<string> DownloadAndExtractSourceAsync(Uri uri, CancellationToken cancellationToken = default) {
+    internal static async Task<string> DownloadAndExtractSourceAsync(Uri uri, CancellationToken cancellationToken = default)
+    {
         var httpClient = new HttpClient();
         var response = await httpClient.GetAsync(uri, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -153,13 +160,13 @@ internal sealed class GenerateCommand : Command
             Version = p.LatestVersion
         }).ToList();
         var json = JsonSerializer.Serialize(packageV1List, new JsonSerializerOptions { WriteIndented = false });
-        
+
         await File.WriteAllTextAsync(outputFile, json, cancellationToken);
     }
 
     internal static async Task<IEnumerable<Dto.PackageV2>> WritePackagesToJsonV2Async(IEnumerable<Package> packages, string outputFile, DateTimeOffset timestamp, CancellationToken cancellationToken = default)
     {
-        
+
         var packageV2List = packages.Select(p => new Dto.PackageV2
         {
             Name = p.Name,
@@ -169,23 +176,29 @@ internal sealed class GenerateCommand : Command
             Tags = p.Tags?.Select(t => t.TagValue!).Distinct(StringComparer.OrdinalIgnoreCase).Order().ToList()
         }).ToList();
 
-        if (File.Exists(outputFile)) {
+        if (File.Exists(outputFile))
+        {
             var existingJson = await File.ReadAllTextAsync(outputFile, cancellationToken);
             var existingPackages = JsonSerializer.Deserialize<IEnumerable<Dto.PackageV2>>(existingJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            if (existingPackages != null) {
-                foreach (var package in packageV2List) {
+            if (existingPackages != null)
+            {
+                foreach (var package in packageV2List)
+                {
                     var existingPackage = existingPackages.FirstOrDefault(p => p.PackageId == package.PackageId && p.Version == package.Version);
-                    if (existingPackage != null) {
+                    if (existingPackage != null)
+                    {
                         package.LastUpdate = existingPackage.LastUpdate;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 Console.WriteLine($"Could not deserialize existing file {outputFile}");
             }
         }
 
         var json = JsonSerializer.Serialize(packageV2List, new JsonSerializerOptions { WriteIndented = false });
-        
+
         await File.WriteAllTextAsync(outputFile, json, cancellationToken);
         return packageV2List;
     }
@@ -215,7 +228,7 @@ internal sealed class GenerateCommand : Command
 
     }
 
-    private static async Task WriteGithubSummaryAsync(IEnumerable<Dto.PackageV2> packages, DateTimeOffset dateTimeOffset,  CancellationToken cancellationToken = default)
+    private static async Task WriteGithubSummaryAsync(IEnumerable<Dto.PackageV2> packages, DateTimeOffset dateTimeOffset, CancellationToken cancellationToken = default)
     {
         var file = Environment.GetEnvironmentVariable("GITHUB_STEP_SUMMARY");
         if (string.IsNullOrEmpty(file))
@@ -249,6 +262,6 @@ internal sealed class GenerateCommand : Command
         }
         await summaryWriter.FlushAsync(cancellationToken);
         await summaryWriter.DisposeAsync();
-        
+
     }
 }

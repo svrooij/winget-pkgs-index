@@ -5,7 +5,7 @@ namespace WingetIndexGenerator.Models;
 
 public partial class WingetContext : DbContext
 {
-    public WingetContext(string sqliteConnectionString): this(new DbContextOptionsBuilder<WingetContext>()
+    public WingetContext(string sqliteConnectionString) : this(new DbContextOptionsBuilder<WingetContext>()
         .UseSqlite(sqliteConnectionString)
         .Options)
     {
@@ -24,12 +24,13 @@ public partial class WingetContext : DbContext
             entity.ToTable("packages");
             entity.HasKey(p => p.Rowid);
             entity.Property(e => e.Rowid).HasColumnName("rowid").ValueGeneratedOnAdd();
-            
+
             // Connect the tags through the tags2_map table, without adding the TagsMap entity to the model
             // This is a many-to-many relationship, so we use the Fluent API to configure it
-            entity.HasMany(p=>p.Tags)
-                .WithMany(t=> t.Packages)
-                .UsingEntity<TagsMap>(j => {
+            entity.HasMany(p => p.Tags)
+                .WithMany(t => t.Packages)
+                .UsingEntity<TagsMap>(j =>
+                {
                     j.ToTable("tags2_map");
                     j.HasKey(tm => new { tm.PackageId, tm.TagId });
                     j.Property(tm => tm.PackageId).HasColumnName("package");
