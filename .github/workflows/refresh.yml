@@ -3,13 +3,13 @@ name: Refresh the index
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '28 */4 * * *'
   push:
     branches:
       - main
     paths:
       - '.github/workflows/refresh.yml'
-
+      - 'src/WingetIndexGenerator/**'
 
 jobs:
   refresh-index:
@@ -26,23 +26,16 @@ jobs:
       - name: 👨‍🔧 Setup .NET Core SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.x
-      
-      - name: 📦 Install wintuner cli
-        run: dotnet tool install --global SvRooij.Winget-Intune.Cli --version 1.0.6
+          dotnet-version: 9.x
 
       - name: 📃 Regenerate index
-        run: wintuner generate-index --output-folder ./ --csvv2 --csv --json --update-github
+        run: dotnet run --project src/WingetIndexGenerator/WingetIndexGenerator.csproj -c Release -- generate
       
-      - name: 📤 Commit and push changes, if any
+      - name: 📤 Commit and push changes
         shell: pwsh
         run: |
           if (git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
             echo "✅ Changes to commit"
-            echo "📃 Updating CSV file"
-            # Get-Content -Path "index.json" | ConvertFrom-Json | Export-Csv -Path "index.csv"
-            # git diff --output=changes.txt index.csv
-            # [System.Environment]::SetEnvironmentVariable("GITHUB_STEP_SUMMARY", "## Found several changes in index`r`n`r`n" +'```Shell' + "`r`n$(Get-Content -Path changes.txt)`r`n"+ '```')
             # uncommitted changes
             git config --local user.email "1292510+svrooij@users.noreply.github.com"
             git config --local user.name "GitHub Action on behalf of svrooij"

@@ -6,7 +6,7 @@ Documentation: [wintuner.app/docs/related/winget-package-index/](https://wintune
 
 ## Why?
 
-[WingetIntune](https://github.com/svrooij/wingetintune) uses winget to search the correct installer to publish to Intune. It had a dependency on winget (thus making it platform dependent) and it was slow. This project is a simple index of all packages in the winget repository. It is updated every 6 hours through a [github action](https://github.com/svrooij/winget-pkgs-index/actions/workflows/refresh.yml).
+[WingetIntune](https://github.com/svrooij/wingetintune) uses winget to search the correct installer to publish to Intune. It had a dependency on winget (thus making it platform dependent) and it was slow. This project is a simple index of all packages in the winget repository. It is updated every 4 hours through a [github action](https://github.com/svrooij/winget-pkgs-index/actions/workflows/refresh.yml).
 
 ## Usage
 
@@ -17,40 +17,8 @@ Documentation: [wintuner.app/docs/related/winget-package-index/](https://wintune
 | CSV | [index.csv](https://github.com/svrooij/winget-pkgs-index/blob/main/index.csv) | `https://github.com/svrooij/winget-pkgs-index/raw/main/index.csv` |
 | JSON | [index.json](https://github.com/svrooij/winget-pkgs-index/blob/main/index.json) | `https://github.com/svrooij/winget-pkgs-index/raw/main/index.json` |
 
-## Latest version wrong?
+## Version wrong?
 
-Since the winget community does not force semantic versioning, there are some issues with computing the latest version.
-The code that is used to find the latest version for a package is defined as follows.
-If you have a better solution, please let me know, or send a PR for the [winget-intune](https://github.com/svrooij/WingetIntune/blob/cead73bcacfa1d9062c77d2fc027175520f407b9/src/Winget.CommunityRepository/VersionsExtensions.cs#L8C1-L36C2).
+The 9th of April 2025, Microsoft removed the old format source file from their CDN. The new source file (which is better!) has an [issue](https://github.com/microsoft/winget-cli/issues/4928) with the versions like `123.0` or `123.10` or `12.0.0.0` the zeros are removed.
 
-```csharp
-internal static class VersionsExtensions
-{
-    internal static string? GetHighestVersion(this IEnumerable<string> versions)
-    {
-        if (versions is null || !versions.Any()) { return string.Empty; }
-        return versions.Max(new VersionComparer());
-    }
-}
-
-internal class VersionComparer : IComparer<string>
-{
-    public int Compare(string? x, string? y)
-    {
-        if (x is null && y is null) { return 0; }
-        if (x is null) { return -1; }
-        if (y is null) { return 1; }
-        try
-        {
-            var xVersion = new Version(x);
-            var yVersion = new Version(y);
-            return xVersion.CompareTo(yVersion);
-        }
-        catch
-        {
-            return x.CompareTo(y);
-        }
-
-    }
-}
-```
+Want to install any of the affected apps, and using this index? Start complaining in [this issue](https://github.com/microsoft/winget-cli/issues/4928). And sorry for the faulty versions, there is nothing I can do!
