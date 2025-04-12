@@ -252,9 +252,10 @@ internal sealed class GenerateCommand : Command
         await summaryWriter.WriteLineAsync($"- Updated packages `{updatedPackages.Count}`");
         await summaryWriter.WriteLineAsync($"- Timestamp `{DateTime.UtcNow:yyyy-MM-dd HH:mm:ssZ}`\r\n");
         await summaryWriter.WriteLineAsync("### Changed packages\r\n");
+        await summaryWriter.WriteLineAsync("| Package ID | Latest version |\r\n|-----|--------|");
         foreach (var package in updatedPackages)
         {
-            await summaryWriter.WriteLineAsync($"- {package.PackageId} [{package.Version}]");
+            await summaryWriter.WriteLineAsync($"| {package.PackageId} | `{package.Version}` |\r\n");
             if (cancellationToken.IsCancellationRequested)
             {
                 break;
