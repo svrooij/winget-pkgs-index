@@ -255,7 +255,7 @@ internal sealed class GenerateCommand : Command
         await summaryWriter.WriteLineAsync("| Package ID | Latest version |\r\n|-----|--------|");
         foreach (var package in updatedPackages)
         {
-            await summaryWriter.WriteLineAsync($"| {package.PackageId} | `{package.Version}` |\r\n");
+            await summaryWriter.WriteLineAsync($"| {package.PackageId} | `{package.Version}` |");
             if (cancellationToken.IsCancellationRequested)
             {
                 break;
