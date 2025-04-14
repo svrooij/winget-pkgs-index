@@ -29,19 +29,24 @@ jobs:
           dotnet-version: 9.x
 
       - name: 📃 Regenerate index
+        # This step needs an id because it sets an output named `packages_updated` with the number of packages that were updated.
+        id: generate_index
         run: dotnet run --project src/WingetIndexGenerator/WingetIndexGenerator.csproj -c Release -- generate
       
-      - name: 📤 Commit and push changes
+      - name: 📤 Push changes
         shell: pwsh
+        # This step only runs if the `packages_updated` output from the previous step is greater than 0.
+        if: steps.generate_index.outputs.packages_updated > 0
         run: |
-          if (git status --porcelain | Where {$_ -notmatch '^\?\?'}) {
-            echo "✅ Changes to commit"
-            # uncommitted changes
-            git config --local user.email "1292510+svrooij@users.noreply.github.com"
-            git config --local user.name "GitHub Action on behalf of svrooij"
-            git add index.json index.csv index.v2.json index.v2.csv
-            git commit -m "Refreshed index 🤖"
-            git push
-          } else {
-            echo "❌ No changes to commit"
-          }
+          $commitMessages = @(
+            "Added some spice to the package stew 🌶️",
+            "Packages updated. Robots are taking over 🤖",
+            "Fresh packages, straight out of the oven 🍞",
+            "New packages delivered by carrier pigeon 🕊️",
+            "Index refreshed. Packages now 20% cooler ❄️"
+          )
+          git add index.json index.csv index.v2.json index.v2.csv
+          $commitMessage = $commitMessages | Get-Random
+          git commit -m $commitMessage
+          git push
+

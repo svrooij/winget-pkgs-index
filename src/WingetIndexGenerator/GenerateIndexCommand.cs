@@ -239,30 +239,53 @@ internal sealed class GenerateCommand : Command
 
         var updatedPackages = packages.Where(p => p.LastUpdate == dateTimeOffset).ToList();
 
-        if (updatedPackages.Count == 0)
-        {
-            Console.WriteLine("No updated packages found. Skipping summary generation.");
-            return;
-        }
-
         using var githubStream = new Util.GithubFileStream(file, FileMode.Append);
         using var summaryWriter = new StreamWriter(githubStream, System.Text.Encoding.UTF8);
-        await summaryWriter.WriteLineAsync("# Winget Index Generator\r\n");
+
+        await summaryWriter.WriteLineAsync("# Winget Index Generator 📃\r\n");
         await summaryWriter.WriteLineAsync($"- Total packages `{packages.Count()}`");
-        await summaryWriter.WriteLineAsync($"- Updated packages `{updatedPackages.Count}`");
-        await summaryWriter.WriteLineAsync($"- Timestamp `{DateTime.UtcNow:yyyy-MM-dd HH:mm:ssZ}`\r\n");
-        await summaryWriter.WriteLineAsync("### Changed packages\r\n");
-        await summaryWriter.WriteLineAsync("| Package ID | Latest version |\r\n|-----|--------|");
-        foreach (var package in updatedPackages)
+        int updatedCount = updatedPackages.Count;
+        await WriteOutputAsync("packages_updated", updatedCount.ToString(), cancellationToken);
+        if (updatedCount > 0)
         {
-            await summaryWriter.WriteLineAsync($"| {package.PackageId} | `{package.Version}` |");
-            if (cancellationToken.IsCancellationRequested)
+            
+            await summaryWriter.WriteLineAsync($"- Updated packages `{updatedCount}`");
+            await summaryWriter.WriteLineAsync($"- Timestamp `{DateTime.UtcNow:yyyy-MM-dd HH:mm:ssZ}`\r\n");
+            await summaryWriter.WriteLineAsync("## Changed packages 🕵️\r\n");
+            await summaryWriter.WriteLineAsync("| Package ID | Latest version |\r\n|-----|--------|");
+            foreach (var package in updatedPackages)
             {
-                break;
+                await summaryWriter.WriteLineAsync($"| {package.PackageId} | `{package.Version}` |");
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
         await summaryWriter.FlushAsync(cancellationToken);
         await summaryWriter.DisposeAsync();
 
+    }
+
+    private static async Task WriteOutputAsync(string variableName, string value, CancellationToken cancellationToken = default)
+    {
+        var file = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
+        if (string.IsNullOrEmpty(file))
+        {
+            Console.WriteLine("GITHUB_OUTPUT environment variable is not set. Skipping setting variable.");
+            return;
+        }
+        try {
+            using var githubStream = new Util.GithubFileStream(file, FileMode.Append);
+            using var outputWriter = new StreamWriter(githubStream, System.Text.Encoding.UTF8);
+
+            await outputWriter.WriteLineAsync($"{variableName}={value}");
+            await outputWriter.FlushAsync(cancellationToken);
+            await outputWriter.DisposeAsync();
+        } catch (Exception ex) {
+            Console.WriteLine($"Error writing to GITHUB_OUTPUT: {ex.Message}");
+        }
+
+        
     }
 }
