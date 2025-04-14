@@ -45,6 +45,8 @@ jobs:
             "New packages delivered by carrier pigeon 🕊️",
             "Index refreshed. Packages now 20% cooler ❄️"
           )
+          git config --local user.email "1292510+svrooij@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
           git add index.json index.csv index.v2.json index.v2.csv
           $commitMessage = $commitMessages | Get-Random
           git commit -m $commitMessage
