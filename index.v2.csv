@@ -4473,7 +4473,7 @@
 "Microsoft.AmendmentAppWordService","4.2.0.0","Amendment App Word Service","2025-03-19 06:05:40Z"
 "Microsoft.AppInstaller","1.25.390.0","App Installer","2025-04-23 00:46:27Z"
 "Microsoft.AppInstallerFileBuilder","1.2020.221.0","AppInstaller File Builder(Preview)","2025-02-19 14:14:20Z"
-"Microsoft.Azd","1.15.100","Azure Developer CLI","2025-05-01 20:33:51Z"
+"Microsoft.Azd","1.15.200","Azure Developer CLI","2025-05-08 00:46:32Z"
 "Microsoft.Azure.aks-engine-azurestack","0.80.3","AKS Engine - Units of Kubernetes on Azure Stack Hub","2025-02-20 18:05:04Z"
 "Microsoft.Azure.AZCopy.10","10.29.0","AzCopy v10","2025-04-30 04:36:26Z"
 "Microsoft.Azure.AztfExport","0.17.1","Microsoft Azure Export for Terraform","2025-03-25 18:05:21Z"
