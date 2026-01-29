@@ -5815,6 +5815,7 @@
 "Microsoft.Azure.AZCopy.10","10.31.1","AzCopy v10","2026-01-07 04:44:18Z"
 "Microsoft.Azure.AztfExport","0.19.0","Microsoft Azure Export for Terraform","2026-01-27 12:45:11Z"
 "Microsoft.Azure.Aztfy","0.10.0","Azure Terrafy","2025-02-19 14:14:20Z"
+"Microsoft.Azure.BatchExplorer","2.23.0","Azure Batch Explorer","2026-01-29 08:44:16Z"
 "Microsoft.Azure.CloudHSM-ClientSDK","2.0.2.2","Azure Cloud HSM Client SDK","2025-12-31 00:47:05Z"
 "Microsoft.Azure.ConnectedMachineAgent","1.60.03293.2680","Azure Connected Machine Agent","2026-01-18 04:44:03Z"
 "Microsoft.Azure.CosmosEmulator","2.14.25","Azure Cosmos DB Emulator","2025-09-04 04:35:20Z"

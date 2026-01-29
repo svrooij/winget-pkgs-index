@@ -5815,6 +5815,7 @@
 "Microsoft.Azure.AZCopy.10","10.31.1"
 "Microsoft.Azure.AztfExport","0.19.0"
 "Microsoft.Azure.Aztfy","0.10.0"
+"Microsoft.Azure.BatchExplorer","2.23.0"
 "Microsoft.Azure.CloudHSM-ClientSDK","2.0.2.2"
 "Microsoft.Azure.ConnectedMachineAgent","1.60.03293.2680"
 "Microsoft.Azure.CosmosEmulator","2.14.25"
