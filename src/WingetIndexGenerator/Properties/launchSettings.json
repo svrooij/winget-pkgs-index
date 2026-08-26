@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WingetIndexGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "generate"
+    }
+  }
+}
