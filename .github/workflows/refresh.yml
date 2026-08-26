@@ -19,14 +19,14 @@ jobs:
       contents: write
     steps:
       - name: 👨‍💻 Check-out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #7.0.1
         with:
           fetch-depth: 0
 
       - name: 👨‍🔧 Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 #v6.2.0
         with:
-          dotnet-version: 9.x
+          dotnet-version: 10.x
 
       - name: 📃 Regenerate index
         # This step needs an id because it sets an output named `packages_updated` with the number of packages that were updated.
